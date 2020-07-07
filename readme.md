@@ -2,6 +2,7 @@
 1. [Database](#database)
 1. [Author(s)](#author)
 1. [Database description](#description)
+1. [Aim](#aim)
  
 # Database
 CSJOBDATABASE
@@ -14,6 +15,6 @@ Applications: Company ID, OpeningPosition, Location,  job Description, AppliedYe
 
 Results: CompanyId, InterviewCall
 
-AIM:
+# Aim
 The database is aimed to provide a better way to look up various job openings, as well as keep track of the progress of the ongoing interviews/application submissions.
 You will be able to select jobs based on category, company, opening, etc.
