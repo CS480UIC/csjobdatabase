@@ -12,6 +12,46 @@
     <servlet-name>InitServlet</servlet-name>
     <url-pattern>/InitServlet</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>UserServletcompanies</display-name>
+    <servlet-name>UserServletcompanies</servlet-name>
+    <servlet-class>user.web.servlet.UserServletcompanies</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserServletcompanies</servlet-name>
+    <url-pattern>/UserServletcompanies</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>UserServletApplications</display-name>
+    <servlet-name>UserServletApplications</servlet-name>
+    <servlet-class>user.web.servlet.UserServletApplications</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserServletApplications</servlet-name>
+    <url-pattern>/UserServletApplications</url-pattern>
+    <url-pattern>/UserServletApplications/list</url-pattern>
+    <url-pattern>/UserServletApplications/new</url-pattern>
+    <url-pattern>/UserServletApplications/insert</url-pattern>
+    <url-pattern>/UserServletApplications/delete</url-pattern>
+    <url-pattern>/UserServletApplications/edit</url-pattern>
+    <url-pattern>/UserServletApplications/update</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>UserServletResults</display-name>
+    <servlet-name>UserServletResults</servlet-name>
+    <servlet-class>user.web.servlet.UserServletResults</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserServletResults</servlet-name>
+    <url-pattern>/UserServletResults</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <description></description>
     <display-name>UserServletRegister</display-name>
@@ -22,6 +62,7 @@
     <servlet-name>UserServletRegister</servlet-name>
     <url-pattern>/UserServletRegister</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description></description>
     <display-name>UserServletLogin</display-name>
@@ -32,6 +73,7 @@
     <servlet-name>UserServletLogin</servlet-name>
     <url-pattern>/UserServletLogin</url-pattern>
   </servlet-mapping>
+  
   <servlet>
     <description></description>
     <display-name>findAll</display-name>
@@ -42,6 +84,7 @@
     <servlet-name>findAll</servlet-name>
     <url-pattern>/findAll</url-pattern>
   </servlet-mapping>
+  
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
     <welcome-file>login.jsp</welcome-file>
