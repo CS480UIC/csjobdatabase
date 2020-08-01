@@ -10,6 +10,7 @@ public class Applications {
 	 * Correspond to the user table
 	 */
 	protected int id;
+	protected int company_id;
 	protected String location;
 	protected String position;
 	protected String jobdescription;
@@ -22,14 +23,11 @@ public class Applications {
     public Applications(int id) {
         this.id = id;
     }
- 
-    public Applications(int id, String location, String position, String jobdescription, float estimatedSalary) {
-        this(location, position, jobdescription, estimatedSalary);
+
+    public Applications(int id, String location, String position, String jobdescription, float estimatedSalary, int company_id) {
         this.id = id;
-    }
-     
-    public Applications(String location, String position, String jobdescription, float estimatedSalary) {
-        this.location = location;
+        this.company_id = company_id;
+    	this.location = location;
         this.position = position;
         this.jobdescription = jobdescription;
         this.estimatedSalary = estimatedSalary;
@@ -41,6 +39,14 @@ public class Applications {
  
     public void setId(int id) {
         this.id = id;
+    }
+    
+    public int getCompanyId() {
+    	return company_id;
+    }
+    
+    public void setCompanyId(int company_id) {
+    	this.company_id = company_id;
     }
  
     public String getLocation() {

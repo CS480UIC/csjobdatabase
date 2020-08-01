@@ -14,143 +14,126 @@ import user.domain.User;
 import user.domain.companies;
 
 
-
-/**
- * DDL functions performed in database
- * @author changxin bai
- *
- */
 public class ApplicationsDao {
 	
-	private String jdbcURL;
-    private String jdbcUsername;
-    private String jdbcPassword;
-    private Connection jdbcConnection;
-     
-    public ApplicationsDao(String jdbcURL, String jdbcUsername, String jdbcPassword) {
-        this.jdbcURL = jdbcURL;
-        this.jdbcUsername = jdbcUsername;
-        this.jdbcPassword = jdbcPassword;
-    }
-     
-    protected void connect() throws SQLException {
-        if (jdbcConnection == null || jdbcConnection.isClosed()) {
-            try {
-                Class.forName("com.mysql.jdbc.Driver");
-            } catch (ClassNotFoundException e) {
-                throw new SQLException(e);
-            }
-            jdbcConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?", "root", "Tanmay@01");
-        }
-    }
-     
-    protected void disconnect() throws SQLException {
-        if (jdbcConnection != null && !jdbcConnection.isClosed()) {
-            jdbcConnection.close();
-        }
+	public static void insertApplications(Applications application) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+			Connection connect = DriverManager
+					.getConnection("jdbc:mysql://localhost:3306/csjobdatabase?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC" , "root" ,"Tanmay@01");
+								
+			String sql = "insert into Applications values(?,?,?,?,?,?)";
+			PreparedStatement statement = connect.prepareStatement(sql);
+			statement.setInt(1, application.getId());
+	        statement.setString(2, application.getLocation());
+	        statement.setString(3, application.getPosition());
+	        statement.setString(4, application.getJobDescription());
+	        statement.setFloat(5,  application.getEstimatedSalary());
+	        statement.setInt(6, application.getCompanyId());
+		    statement.executeUpdate();
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+    
+    public static List<Object> listAllApplications() throws InstantiationException, IllegalAccessException, ClassNotFoundException{
+		List<Object> list = new ArrayList<>();
+		try {
+			System.out.print("here");
+			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+			Connection connect = DriverManager
+			          .getConnection("jdbc:mysql://localhost:3306/csjobdatabase?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC" , "root" ,"Tanmay@01");
+			
+			String sql = "select * from Applications";
+			PreparedStatement preparestatement = connect.prepareStatement(sql); 
+			ResultSet resultSet = preparestatement.executeQuery();
+			
+			while(resultSet.next()){
+				Applications comp = new Applications();
+				comp.setId(resultSet.getInt("Id"));
+				comp.setLocation(resultSet.getString("Location"));
+	    		comp.setPosition(resultSet.getString("Position"));
+	    		comp.setJobDescription(resultSet.getString("jobDescription"));
+	    		comp.setEstimatedSalary(resultSet.getFloat("estimatedSalary"));
+	    		comp.setCompanyId(resultSet.getInt("company_id"));
+	    		list.add(comp);
+			 }
+			 
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return list;	
+	}
+    
+    
+    public static boolean deleteApplications(Applications application) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    	try {
+			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+			Connection connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/csjobdatabase?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC" , "root" ,"Tanmay@01");
+								
+			String sql = "DELETE FROM Applications where id = ?";//////
+			PreparedStatement preparestatement = connect.prepareStatement(sql); 
+		    preparestatement.setInt(1,application.getId());
+		    boolean deleteComp = preparestatement.executeUpdate() > 0;
+		    return deleteComp;
+		    
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
     }
     
-    public boolean insertApplications(Applications application) throws SQLException {
-        String sql = "INSERT INTO application (location, position, jobdescription, estimatedSalary) VALUES (?, ?, ?,?)";
-        connect();
-         
-        PreparedStatement statement = jdbcConnection.prepareStatement(sql);
-        statement.setString(1, application.getLocation());
-        statement.setString(2, application.getPosition());
-        statement.setString(3, application.getJobDescription());
-        statement.setFloat(4, application.getEstimatedSalary());
-         
-        boolean rowInserted = statement.executeUpdate() > 0;
-        statement.close();
-        disconnect();
-        return rowInserted;
-    }
     
-    public List<Applications> listAllApplications() throws SQLException {
-        List<Applications> listapplication = new ArrayList<>();
-         
-        String sql = "SELECT * FROM application";
-         
-        connect();
-         
-        Statement statement = jdbcConnection.createStatement();
-        ResultSet resultSet = statement.executeQuery(sql);
-         
-        while (resultSet.next()) {
-            int id = resultSet.getInt("application_id");
-            String location = resultSet.getString("location");
-            String position = resultSet.getString("position");
-            String jobdescription = resultSet.getString("job_description");
-            float estimatedSalary = resultSet.getFloat("estimated_salary");
-             
-            Applications application = new Applications(id, location, position, jobdescription, estimatedSalary);
-            listapplication.add(application);
-        }
-         
-        resultSet.close();
-        statement.close();
-         
-        disconnect();
-         
-        return listapplication;
+    public static boolean updateApplications(Applications application) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    	try {
+			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+			Connection connect = DriverManager
+			          .getConnection("jdbc:mysql://localhost:3306/csjobdatabase?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC" , "root" ,"Tanmay@01");
+								
+			String sql = "UPDATE Applications SET id = ?, location = ?, position = ?, jobDescription= ?, estimatedSalary = ? WHERE id = ?";
+			PreparedStatement statement = connect.prepareStatement(sql);
+			statement.setInt(1, application.getId());
+	        statement.setString(2, application.getLocation());
+	        statement.setString(3, application.getPosition());
+	        statement.setString(4, application.getJobDescription());
+	        statement.setFloat(5,  application.getEstimatedSalary());
+	        statement.setInt(6, application.getCompanyId());
+	        statement.setInt(7, application.getId());
+		    boolean updated = statement.executeUpdate() > 0; 
+		    return updated;
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
     }
+
     
-    public boolean deleteApplications(Applications application) throws SQLException {
-        String sql = "DELETE FROM application where application_id = ?";
-         
-        connect();
-         
-        PreparedStatement statement = jdbcConnection.prepareStatement(sql);
-        statement.setInt(1, application.getId());
-         
-        boolean rowDeleted = statement.executeUpdate() > 0;
-        statement.close();
-        disconnect();
-        return rowDeleted;     
-    }
-     
-    public boolean updateApplications(Applications application) throws SQLException {
-        String sql = "UPDATE company SET location = ?, position = ?, jobdescription = ?, esitmatedSalary = ?";
-        sql += " WHERE company_id = ?";
-        connect();
-         
-        PreparedStatement statement = jdbcConnection.prepareStatement(sql);
-        statement.setString(1, application.getLocation());
-        statement.setString(2, application.getPosition());
-        statement.setString(3, application.getJobDescription());
-        statement.setFloat(4, application.getEstimatedSalary());
-        statement.setInt(5, application.getId());
-         
-        boolean rowUpdated = statement.executeUpdate() > 0;
-        statement.close();
-        disconnect();
-        return rowUpdated;     
-    }
-    
-    public Applications getApplications(int id) throws SQLException {
-        Applications application = null;
-        String sql = "SELECT * FROM application WHERE application_id = ?";
-         
-        connect();
-         
-        PreparedStatement statement = jdbcConnection.prepareStatement(sql);
-        statement.setInt(1, id);
-         
-        ResultSet resultSet = statement.executeQuery();
-         
-        if (resultSet.next()) {
-            String location = resultSet.getString("location");
-            String position = resultSet.getString("position");
-            String jobdescription = resultSet.getString("jobdescription");
-            float estimatedSalary = resultSet.getFloat("esitmated_salary");
-             
-            application = new Applications(id, location, position, jobdescription, estimatedSalary);
-        }
-         
-        resultSet.close();
-        statement.close();
-         
-        return application;
+    public static Applications getApplicationByID(int id) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+    	Applications comp = new Applications();
+    	try {
+			
+			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+			Connection connect = DriverManager
+					.getConnection("jdbc:mysql://localhost:3306/csjobdatabase?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC" , "root" ,"Tanmay@01");
+
+		    String sql = "SELECT * FROM Applications WHERE id = ?";
+		    PreparedStatement preparestatement = connect.prepareStatement(sql); 
+		    preparestatement.setInt(1,id);
+		    ResultSet resultSet = preparestatement.executeQuery();
+
+		    while(resultSet.next()){
+		    	int cid = resultSet.getInt("id");
+		    	if(cid == id){
+		    		comp.setId(resultSet.getInt("Id"));
+		    		comp.setLocation(resultSet.getString("Location"));
+		    		comp.setPosition(resultSet.getString("Position"));
+		    		comp.setJobDescription(resultSet.getString("jobDescription"));
+		    		comp.setEstimatedSalary(resultSet.getFloat("estimatedSalary"));
+		    		comp.setCompanyId(resultSet.getInt("company_id"));
+		    	}
+		    }
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
+    	return comp;
     }
 		
 }

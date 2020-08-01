@@ -22,116 +22,54 @@ import user.domain.User;
 import user.domain.companies;
 import user.service.UserException;
 import user.service.UserService;
+import user.service.companiesService;
 
 /**
  * Servlet implementation class UserServlet
  */
 
-@WebServlet("/")
 public class UserServletcompanies extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-	private companiesDao companyDAO;
-	 
-    public void init() {
-        String jdbcURL = getServletContext().getInitParameter("jdbcURL");
-        String jdbcUsername = getServletContext().getInitParameter("jdbcUsername");
-        String jdbcPassword = getServletContext().getInitParameter("jdbcPassword");
+	public UserServletcompanies() {
+		super();
+	}
  
-        companyDAO = new companiesDao(jdbcURL, jdbcUsername, jdbcPassword);
- 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
     }
  
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doGet(request, response);
+    	companiesService companyservice = new companiesService();  
+		companies form = new companies();	
+
+		String name = request.getParameter("company_name");
+        int id = Integer.parseInt(request.getParameter("company_id"));
+        String jobtype = request.getParameter("company_jobtype");
+        String category = request.getParameter("company_category");
+        
+		form.setName(name);
+		form.setId(id);
+		form.setJobtype(jobtype);
+		form.setCategory(category);
+		
+		try {
+			companyservice.registCompany(form);
+			request.getRequestDispatcher("/jsps/companies/companies_item.jsp").forward(request, response);
+			
+		} catch (ClassNotFoundException | UserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
- 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String action = request.getServletPath();
- 
-        try {
-            switch (action) {
-            case "/new":
-                showNewForm(request, response);
-                break;
-            case "/jsps/user/insert":
-                insertCompany(request, response);
-                break;
-            case "/delete":
-                deleteCompany(request, response);
-                break;
-            case "/edit":
-                showEditForm(request, response);
-                break;
-            case "/update":
-                updateCompany(request, response);
-                break;
-            default:
-                listCompanies(request, response);
-                break;
-            }
-        } catch (SQLException ex) {
-            throw new ServletException(ex);
-        }
-    }
- 
-    private void listCompanies(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException, ServletException {
-        List<companies> listBook = companyDAO.listAllcompanies();
-        request.setAttribute("listCompany", listBook);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("companiesList.jsp");
-        dispatcher.forward(request, response);
-    }
- 
-    private void showNewForm(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        RequestDispatcher dispatcher = request.getRequestDispatcher("companies.jsp");
-        dispatcher.forward(request, response);
-    }
- 
-    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        companies existingBook = companyDAO.getCompany(id);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("companies.jsp");
-        request.setAttribute("company", existingBook);
-        dispatcher.forward(request, response);
- 
-    }
- 
-    private void insertCompany(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException {
-        String name = request.getParameter("name");
-        String category = request.getParameter("category");
-        String jobtype = request.getParameter("jobtype");
- 
-        companies newCompany = new companies(name, category, jobtype);
-        companyDAO.insertCompanies(newCompany);
-        response.sendRedirect("list");
-    }
- 
-    private void updateCompany(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        String name = request.getParameter("name");
-        String category = request.getParameter("category");
-        String jobtype = request.getParameter("jobtype");
- 
-        companies company = new companies(id, name, category, jobtype);
-        companyDAO.updateCompanies(company);
-        response.sendRedirect("list");
-    }
- 
-    private void deleteCompany(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
- 
-        companies company = new companies(id);
-        companyDAO.deleteCompanies(company);
-        response.sendRedirect("list");
- 
-    }
+        
 
 }

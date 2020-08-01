@@ -31,7 +31,7 @@
   </head>
   
   <body>
-<h1 style="text-align: center;">CSC4710</h1>
+<h1 style="text-align: center;">CS480</h1>
 <div style="font-size: 10pt;">
 	<c:choose>
 		<c:when test="${empty sessionScope.session_user }">
@@ -39,8 +39,8 @@
 			<a href="<c:url value='/jsps/user/regist.jsp'/>" target="_parent">Register</a> |&nbsp; 
 			<a href="<c:url value='/jsps/user/initialize.jsp'/>" target="_parent">Initialize Database</a> |&nbsp;
 			<a href="<c:url value='/jsps/user/ResultsList.jsp'/>" target="_parent">Result Database</a> |&nbsp;
-			<a href="<c:url value='/jsps/user/ApplicationsList.jsp'/>" target="_parent">Applications Database</a> |&nbsp;
-			<a href="<c:url value='/jsps/user/companiesList.jsp'/>" target="_parent">Companies Database</a>		
+			<a href="<c:url value='/jsps/Applications/Applications_item.jsp'/>" target="_parent">Applications Database</a> |&nbsp;
+			<a href="<c:url value='/jsps/companies/companies_item.jsp'/>" target="_parent">Companies Database</a>		
 		</c:when>
 		<c:otherwise>
 			Hello：${sessionScope.session_user.username };

@@ -9,59 +9,55 @@ public class companies {
 	/*
 	 * Correspond to the user table
 	 */
-	protected int id;
-	protected String name;
-	protected String category;
-	protected String jobtype;
+	protected int company_id;
+	protected String company_name;
+	protected String company_category;
+	protected String company_jobtype;
 	
 	
 	public companies() {
     }
  
-    public companies(int id) {
-        this.id = id;
+    public companies(int company_id) {
+        this.company_id = company_id;
     }
- 
-    public companies(int id, String name, String category, String jobtype) {
-        this(name, category, jobtype);
-        this.id = id;
-    }
-     
-    public companies(String name, String category, String jobtype) {
-        this.name = name;
-        this.category = category;
-        this.jobtype = jobtype;
+
+    public companies(int company_id, String company_name, String company_category, String company_jobtype) {
+        this.company_id = company_id;
+    	this.company_name = company_name;
+        this.company_category = company_category;
+        this.company_jobtype = company_jobtype;
     }
  
     public int getId() {
-        return id;
+        return company_id;
     }
  
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int company_id) {
+        this.company_id = company_id;
     }
  
     public String getName() {
-        return name;
+        return company_name;
     }
  
     public void setName(String name) {
-        this.name = name;
+        this.company_name = name;
     }
  
     public String getCategory() {
-        return category;
+        return company_category;
     }
  
     public void setCategory(String category) {
-        this.category = category;
+        this.company_category = category;
     }
  
     public String getJobtype() {
-        return jobtype;
+        return company_jobtype;
     }
  
     public void setJobtype(String jobtype) {
-        this.jobtype = jobtype;
+        this.company_jobtype = jobtype;
     }
 }

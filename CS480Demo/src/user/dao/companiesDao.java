@@ -13,140 +13,118 @@ import java.util.List;
 import user.domain.User;
 import user.domain.companies;
 
-
-
-/**
- * DDL functions performed in database
- * @author changxin bai
- *
- */
 public class companiesDao {
 	
-	private String jdbcURL;
-    private String jdbcUsername;
-    private String jdbcPassword;
-    private Connection jdbcConnection;
-     
-    public companiesDao(String jdbcURL, String jdbcUsername, String jdbcPassword) {
-        this.jdbcURL = jdbcURL;
-        this.jdbcUsername = jdbcUsername;
-        this.jdbcPassword = jdbcPassword;
-    }
-     
-    protected void connect() throws SQLException {
-        if (jdbcConnection == null || jdbcConnection.isClosed()) {
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-            } catch (ClassNotFoundException e) {
-                throw new SQLException(e);
-            }
-            jdbcConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore?", "root", "Tanmay@01");
-        }
-    }
-     
-    protected void disconnect() throws SQLException {
-        if (jdbcConnection != null && !jdbcConnection.isClosed()) {
-            jdbcConnection.close();
-        }
+    public static void insertCompanies(companies company) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+			Connection connect = DriverManager
+					.getConnection("jdbc:mysql://localhost:3306/csjobdatabase?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC" , "root" ,"Tanmay@01");
+								
+			String sql = "insert into companies values(?,?,?,?)";
+			PreparedStatement statement = connect.prepareStatement(sql);
+			statement.setInt(1, company.getId());
+	        statement.setString(2, company.getName());
+	        statement.setString(3, company.getCategory());
+	        statement.setString(4, company.getJobtype());
+		    statement.executeUpdate();
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+    
+    public static List<Object> listAllCompanies() throws InstantiationException, IllegalAccessException, ClassNotFoundException{
+		List<Object> list = new ArrayList<>();
+		try {
+			System.out.print("here");
+			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+			Connection connect = DriverManager
+			          .getConnection("jdbc:mysql://localhost:3306/csjobdatabase?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC" , "root" ,"Tanmay@01");
+			
+			String sql = "select * from companies";
+			PreparedStatement preparestatement = connect.prepareStatement(sql); 
+			ResultSet resultSet = preparestatement.executeQuery();
+			System.out.print("here2");
+			while(resultSet.next()){
+				companies comp = new companies();
+				comp.setId(resultSet.getInt("company_id"));
+				comp.setName(resultSet.getString("company_name"));
+	    		comp.setCategory(resultSet.getString("company_category"));
+	    		comp.setJobtype(resultSet.getString("company_jobtype"));
+	    		list.add(comp);
+			 }
+			 
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return list;	
+	}
+    
+    
+    public static boolean deleteCompanies(companies company) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    	try {
+			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+			Connection connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/csjobdatabase?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC" , "root" ,"Tanmay@01");
+								
+			String sql = "DELETE FROM companies where company_id = ?";
+			PreparedStatement preparestatement = connect.prepareStatement(sql); 
+		    preparestatement.setInt(1,company.getId());
+		    boolean deleteComp = preparestatement.executeUpdate() > 0;
+		    return deleteComp;
+		    
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
     }
     
-    public boolean insertCompanies(companies company) throws SQLException {
-        String sql = "INSERT INTO company (name, category, jobtype) VALUES (?, ?, ?)";
-        connect();
-         
-        PreparedStatement statement = jdbcConnection.prepareStatement(sql);
-        statement.setString(1, company.getName());
-        statement.setString(2, company.getCategory());
-        statement.setString(3, company.getJobtype());
-         
-        boolean rowInserted = statement.executeUpdate() > 0;
-        statement.close();
-        disconnect();
-        return rowInserted;
-    }
     
-    public List<companies> listAllcompanies() throws SQLException {
-        List<companies> listcompany = new ArrayList<>();
-         
-        String sql = "SELECT * FROM company";
-         
-        connect();
-         
-        Statement statement = jdbcConnection.createStatement();
-        ResultSet resultSet = statement.executeQuery(sql);
-         
-        while (resultSet.next()) {
-            int id = resultSet.getInt("company_id");
-            String name = resultSet.getString("company_name");
-            String category = resultSet.getString("category");
-            String jobtype = resultSet.getString("job_type");
-             
-            companies company = new companies(id, name, category, jobtype);
-            listcompany.add(company);
-        }
-         
-        resultSet.close();
-        statement.close();
-         
-        disconnect();
-         
-        return listcompany;
+    public static boolean updateCompanies(companies company) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    	try {
+			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+			Connection connect = DriverManager
+			          .getConnection("jdbc:mysql://localhost:3306/csjobdatabase?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC" , "root" ,"Tanmay@01");
+								
+			String sql = "UPDATE companies SET company_id = ?, company_name = ?, company_category = ?, company_jobtype= ? WHERE company_id = ?";
+			PreparedStatement statement = connect.prepareStatement(sql);
+			statement.setInt(1, company.getId());
+			statement.setString(2, company.getName());
+	        statement.setString(3, company.getCategory());
+	        statement.setString(4, company.getJobtype());
+	        statement.setInt(5, company.getId());
+		    boolean updated = statement.executeUpdate() > 0; 
+		    return updated;
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
     }
+
     
-    public boolean deleteCompanies(companies company) throws SQLException {
-        String sql = "DELETE FROM company where company_id = ?";
-         
-        connect();
-         
-        PreparedStatement statement = jdbcConnection.prepareStatement(sql);
-        statement.setInt(1, company.getId());
-         
-        boolean rowDeleted = statement.executeUpdate() > 0;
-        statement.close();
-        disconnect();
-        return rowDeleted;     
-    }
-     
-    public boolean updateCompanies(companies company) throws SQLException {
-        String sql = "UPDATE company SET title = ?, author = ?, price = ?";
-        sql += " WHERE company_id = ?";
-        connect();
-         
-        PreparedStatement statement = jdbcConnection.prepareStatement(sql);
-        statement.setString(1, company.getName());
-        statement.setString(2, company.getCategory());
-        statement.setString(3, company.getJobtype());
-        statement.setInt(4, company.getId());
-         
-        boolean rowUpdated = statement.executeUpdate() > 0;
-        statement.close();
-        disconnect();
-        return rowUpdated;     
-    }
-    
-    public companies getCompany(int id) throws SQLException {
-        companies company = null;
-        String sql = "SELECT * FROM company WHERE company_id = ?";
-         
-        connect();
-         
-        PreparedStatement statement = jdbcConnection.prepareStatement(sql);
-        statement.setInt(1, id);
-         
-        ResultSet resultSet = statement.executeQuery();
-         
-        if (resultSet.next()) {
-            String name = resultSet.getString("company_name");
-            String category = resultSet.getString("category");
-            String jobtype = resultSet.getString("jobtype");
-             
-            company = new companies(id, name, category, jobtype);
-        }
-         
-        resultSet.close();
-        statement.close();
-         
-        return company;
+    public static companies getCompanyByID(int company_id) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+    	companies comp = new companies();
+    	try {
+			
+			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+			Connection connect = DriverManager
+					.getConnection("jdbc:mysql://localhost:3306/csjobdatabase?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC" , "root" ,"Tanmay@01");
+
+		    String sql = "SELECT * FROM companies WHERE company_id = ?";
+		    PreparedStatement preparestatement = connect.prepareStatement(sql); 
+		    preparestatement.setInt(1,company_id);
+		    ResultSet resultSet = preparestatement.executeQuery();
+
+		    while(resultSet.next()){
+		    	int cid = resultSet.getInt("company_id");
+		    	if(cid == company_id){
+		    		comp.setId(resultSet.getInt("company_id"));
+		    		comp.setName(resultSet.getString("company_name"));
+		    		comp.setCategory(resultSet.getString("company_category"));
+		    		comp.setJobtype(resultSet.getString("company_jobtype"));  		
+		    	}
+		    }
+		} catch(SQLException e) {
+			throw new RuntimeException(e);
+		}
+    	return comp;
     }
 		
 }
