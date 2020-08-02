@@ -33,7 +33,7 @@ public class ResultsDao {
 		}
 	}
     
-    public static List<Object> listAllCompanies() throws InstantiationException, IllegalAccessException, ClassNotFoundException{
+    public static List<Object> listAllResults() throws InstantiationException, IllegalAccessException, ClassNotFoundException{
 		List<Object> list = new ArrayList<>();
 		try {
 			System.out.print("here");

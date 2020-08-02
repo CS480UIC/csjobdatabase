@@ -93,7 +93,7 @@ public class InitializeDao {
 							"estimatedSalary INTEGER," +                //Added money for estimatedSalary
 							"company_id INTEGER, " +                    //Added company_id as a foreign key
 							"FOREIGN KEY ( company_id ) REFERENCES companies( company_id ) " +
-							"ON DELETE SET NULL " +
+							"ON DELETE CASCADE " +
 							"ON UPDATE CASCADE, " +
 							"PRIMARY KEY ( id ))";
 			statement.executeUpdate(sqlstmt);
@@ -139,7 +139,7 @@ public class InitializeDao {
     							"interview_progress VARCHAR(50), " +
     							"application_id INTEGER, " +
     							"FOREIGN KEY ( application_id ) REFERENCES applications( id ) " +
-    							"ON DELETE SET NULL " +
+    							"ON DELETE CASCADE " +
     							"ON UPDATE CASCADE, " +
     							"PRIMARY KEY ( results_id ))";
     			statement.executeUpdate(sqlstmt1);

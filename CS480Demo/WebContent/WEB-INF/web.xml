@@ -14,6 +14,94 @@
   </servlet-mapping>
   
   
+  <servlet>
+    <description></description>
+    <display-name>CQuery1Servlet</display-name>
+    <servlet-name>CQuery1Servlet</servlet-name>
+    <servlet-class>user.web.servlet.CQuery1Servlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CQuery1Servlet</servlet-name>
+    <url-pattern>/CQuery1Servlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>CQuery2Servlet</display-name>
+    <servlet-name>CQuery2Servlet</servlet-name>
+    <servlet-class>user.web.servlet.CQuery2Servlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CQuery2Servlet</servlet-name>
+    <url-pattern>/CQuery2Servlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>CQuery3Servlet</display-name>
+    <servlet-name>CQuery3Servlet</servlet-name>
+    <servlet-class>user.web.servlet.CQuery3Servlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CQuery3Servlet</servlet-name>
+    <url-pattern>/CQuery3Servlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>CQuery4Servlet</display-name>
+    <servlet-name>CQuery4Servlet</servlet-name>
+    <servlet-class>user.web.servlet.CQuery4Servlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CQuery4Servlet</servlet-name>
+    <url-pattern>/CQuery4Servlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>CQuery5Servlet</display-name>
+    <servlet-name>CQuery5Servlet</servlet-name>
+    <servlet-class>user.web.servlet.CQuery5Servlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CQuery5Servlet</servlet-name>
+    <url-pattern>/CQuery5Servlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>SimpleQuery1Servlet</display-name>
+    <servlet-name>SimpleQuery1Servlet</servlet-name>
+    <servlet-class>user.web.servlet.SimpleQuery1Servlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SimpleQuery1Servlet</servlet-name>
+    <url-pattern>/SimpleQuery1Servlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>SimpleQuery2Servlet</display-name>
+    <servlet-name>SimpleQuery2Servlet</servlet-name>
+    <servlet-class>user.web.servlet.SimpleQuery2Servlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SimpleQuery2Servlet</servlet-name>
+    <url-pattern>/SimpleQuery2Servlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>SimpleQuery3Servlet</display-name>
+    <servlet-name>SimpleQuery3Servlet</servlet-name>
+    <servlet-class>user.web.servlet.SimpleQuery3Servlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SimpleQuery3Servlet</servlet-name>
+    <url-pattern>/SimpleQuery3Servlet</url-pattern>
+  </servlet-mapping>
+  
   
   
   <servlet>
@@ -134,7 +222,49 @@
   
   
   
+  <servlet>
+	<description/>
+	<display-name>deleteResults</display-name>
+	<servlet-name>deleteResults</servlet-name>
+	<servlet-class>user.web.servlet.deleteResults</servlet-class>
+  </servlet>
+  <servlet-mapping>
+	<servlet-name>deleteResults</servlet-name>
+	<url-pattern>/deleteResults</url-pattern>
+  </servlet-mapping>
   
+  <servlet>
+	<description/>
+	<display-name>listAllResults</display-name>
+	<servlet-name>listAllResults</servlet-name>
+	<servlet-class>user.web.servlet.listAllResults</servlet-class>
+  </servlet>
+  <servlet-mapping>
+	<servlet-name>listAllResults</servlet-name>
+	<url-pattern>/listAllResults</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+	<description/>
+	<display-name>showEditFormResults</display-name>
+	<servlet-name>showEditFormResults</servlet-name>
+	<servlet-class>user.web.servlet.showEditFormResults</servlet-class>
+  </servlet>
+  <servlet-mapping>
+	<servlet-name>showEditFormResults</servlet-name>
+	<url-pattern>/showEditFormResults</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+	<description/>
+	<display-name>updateResults</display-name>
+	<servlet-name>updateResults</servlet-name>
+	<servlet-class>user.web.servlet.updateResults</servlet-class>
+  </servlet>
+  <servlet-mapping>
+	<servlet-name>updateResults</servlet-name>
+	<url-pattern>/updateResults</url-pattern>
+  </servlet-mapping>  
   
   <servlet>
     <description></description>
@@ -146,6 +276,11 @@
     <servlet-name>UserServletResults</servlet-name>
     <url-pattern>/UserServletResults</url-pattern>
   </servlet-mapping>
+  
+  
+  
+  
+  
   
   <servlet>
     <description></description>
