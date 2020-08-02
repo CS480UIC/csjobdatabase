@@ -11,9 +11,9 @@ Tanmay Sarin
 # Database description
 Companies: IdNumber, Name, Category(startups, fortune500, etc), jobtype (internship, traineeship, job)
 
-Applications: Company ID, OpeningPosition, Location,  job Description, AppliedYet, EstimatedSalary
+Applications: Application Id, Company ID, Position, Location,  job Description, EstimatedSalary
 
-Results: CompanyId, InterviewCall
+Results: Results Id, Application Id, Application Link, Interview Progress
 
 # Aim
 The database is aimed to provide a better way to look up various job openings, as well as keep track of the progress of the ongoing interviews/application submissions.
