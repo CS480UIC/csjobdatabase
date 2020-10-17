@@ -2,6 +2,7 @@ import java.util.HashMap;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -14,7 +15,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -23,7 +27,7 @@ public class JavaFXTemplate extends Application {
 //	TextField t1;
 //	
 	private Button startButton, b1;
-	private TextField t1;
+	private TextField t1, text;
 	private MenuBar menu;
 	
 	HashMap<String, Scene> sceneMap;
@@ -77,7 +81,37 @@ public class JavaFXTemplate extends Application {
 		
 		//pane.setCenter(startButton);
 		
-		Scene scene = new Scene(startButton, 700, 700);
+		// Add a menu with 1 tab and a few options
+		menu = new MenuBar(); //a menu bar takes menus as children
+		Menu mMenu = new Menu("Menu"); //a menu goes inside a menu bar
+		
+		// Menu items
+		MenuItem iRules = new MenuItem("Rules");
+		MenuItem iWinning = new MenuItem("Odds of Winning");
+		MenuItem iExit = new MenuItem("Exit");
+		
+		iExit.setOnAction(e -> Platform.exit());
+		
+		//Creating a Text object 
+	    text = new TextField();
+	    text.setText("Hi!  Testing!!!!!");
+	    text.setEditable(false);
+	    text.setVisible(false);
+	      
+	    //Setting the text to be added. 
+	    //text.setText("Hello how are you"); 
+	    iRules.setOnAction(e -> text.setVisible(true));
+		
+		// Add menu items to menu option
+		// Add menus to menu tab
+		mMenu.getItems().addAll(iRules, iWinning, iExit);
+		menu.getMenus().add(mMenu);
+		
+		StackPane stackPane = new StackPane();
+		stackPane.getChildren().addAll(new VBox(startButton), text);
+		// Set up the scene
+		Scene scene = new Scene(new VBox(menu, stackPane), 700, 700);
+//		Scene scene = new Scene(startButton, 700, 700);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
