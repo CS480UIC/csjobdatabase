@@ -1,12 +1,16 @@
 import java.util.HashMap;
+import java.util.Iterator;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -35,6 +39,10 @@ public class JavaFXTemplate extends Application {
 	HashMap<String, Scene> sceneMap;
 	PauseTransition pause = new PauseTransition(Duration.seconds(1));
 	EventHandler<ActionEvent> returnButtons;
+	
+	GenericQueue<String> myQueue;
+	//ListView<String> displayQueueItems;
+	ObservableList<String> storeQueueItemsInListView;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -104,6 +112,10 @@ public class JavaFXTemplate extends Application {
 		primaryStage.show();
 	}
 	
+/////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+	
 	// method to create our first scene with controls
 	public Scene createControlScene() {
 		
@@ -138,24 +150,48 @@ public class JavaFXTemplate extends Application {
 		menu.getMenus().add(mMenu);
 		
 ///////////// Adding a GridPane in the CENTER /////////////////////////////////////////
+		storeQueueItemsInListView = FXCollections.observableArrayList();
+		myQueue = new GenericQueue<String>("The selected numbers are:");
+		ListView<String> displayQueueItems = new ListView<String>();
 		
 		myHandler = new EventHandler<ActionEvent>() {
 			
 			public void handle(ActionEvent e) {
+				String t = ((Button)e.getSource()).getText();
 				System.out.println("button pressed: " + ((Button)e.getSource()).getText());
 				Button b1 = (Button)e.getSource();
+				//b1.setMinWidth(50);
 				b1.setDisable(true);
+				myQueue.enqueue(t);
+				
+				displayQueueItems.getItems().removeAll(storeQueueItemsInListView);
+				storeQueueItemsInListView.clear();
+				Iterator<String> i = myQueue.createIterator();
+				while(i.hasNext()) { 
+					storeQueueItemsInListView.add(i.next());
+				}
+				
+				displayQueueItems.setItems(storeQueueItemsInListView);
 			}
 		};
 		
 		GridPane grid = new GridPane();
 		addGrid(grid); //populate the GridPane with buttons
-
-//////////////// Setup the GridPane in the RIGHT  //////////////////////////////////////
+		
+    ///////////////////////////////////////////////
+		
+		displayQueueItems.setStyle("-fx-font-size: 15;"+"-fx-border-size: 20;"+ 
+				"-fx-border-color: purple;");
+		
+	///////////////////////////////////////////////
 		// The plan is make a vbox on the right side of the grid pane
 		// which displays all the required text.
-		
-		VBox vbox = new VBox();
+				
+		VBox vboxCenter = new VBox();
+		vboxCenter.setSpacing(10);
+		vboxCenter.getChildren().addAll(grid,displayQueueItems);
+
+//////////////// Setup the GridPane in the RIGHT  //////////////////////////////////////
 		
    //////////////////////////////////////////////		
         Text text1 = new Text();      
@@ -194,19 +230,25 @@ public class JavaFXTemplate extends Application {
         
     /////////////////////////////////////////////////    
         
+        // The plan is make a vbox on the right side of the grid pane
+     	// which displays all the required text.
+     		
+     	VBox vbox = new VBox();
         vbox.setSpacing(10);  
         vbox.getChildren().addAll(text1,button1,button2,button3,button4,text2,button5,button6,button7,button8,submitButton);
         
 /////////////// Setup GridPane View /////////////////////////////////////////////////
 		
 		border.setTop(menu);
-		border.setCenter(grid);
+		border.setCenter(vboxCenter);
 		border.setRight(vbox);
 		
 ////////////////////////////////////////////////////////////////////////////////////
 		
 		return new Scene(border, 700,700);
 	}
+	
+	/// Showing amaan what gitbash is!
 	
 	/*
 	 * method to populate a GridPane with buttons and attach a handler to each button
@@ -218,6 +260,7 @@ public class JavaFXTemplate extends Application {
 				counter  = (10*i) + x + 1;
 				Button b1 = new Button(Integer.toString(counter));
 				b1.setOnAction(myHandler);
+				b1.setMinWidth(50);
 				grid.add(b1, x, i);
 			}
 		}
