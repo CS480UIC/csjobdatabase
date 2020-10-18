@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -44,8 +45,11 @@ public class JavaFXTemplate extends Application {
 	private MenuBar menu;
 	private EventHandler<ActionEvent> myHandler;
 	
+	ArrayList<String> matchedNums = new ArrayList<String>();
 	int iterations = 0, numPressed = 0, drawingLoops = 0;
+	int numCounter = 0;
 	String temp = "";
+	String matches = "";
 	
 	HashMap<String, Scene> sceneMap;
 	PauseTransition pause = new PauseTransition(Duration.seconds(1));
@@ -344,6 +348,12 @@ public class JavaFXTemplate extends Application {
 				}
 				
 				displayQueueItems.setItems(storeQueueItemsInListView);
+				
+				Iterator<String> y = myQueue.createIterator();
+				while(y.hasNext()) { 
+					System.out.println(y.next());
+				}
+				
 			}
 		};
         
@@ -500,25 +510,60 @@ public class JavaFXTemplate extends Application {
         
         Button checkDraws = new Button("Check Draws!");
         
-        TextArea drawNumbers = new TextArea();
+        int[] array = new int[80];
+        
+        for(int i=0; i<80; i++) {
+        	array[i] = i+1;
+        }
+        
+        Random rand = new Random();
+        for (int i = 0; i < array.length; i++) {
+			int randomIndexToSwap = rand.nextInt(array.length);
+			int temp = array[randomIndexToSwap];
+			array[randomIndexToSwap] = array[i];
+			array[i] = temp;
+		}
+        
+//        ArrayList<String> matchedNums = new ArrayList<String>();
+        
+        TextField drawNumbers = new TextField();
+        TextField matchedNumbers = new TextField();
+        matchedNumbers.setVisible(false);
+        
+        Set<Integer>bigSet = new LinkedHashSet<Integer>();
 
         checker = new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
 				// TODO Auto-generated method stub
-				Random randNum = new Random();
-				Set<Integer>set = new LinkedHashSet<Integer>();
-				int num = randNum.nextInt(80)+1;
 				
-				if(set.contains(num) == false) {
-					set.add(num);
-					temp = temp + String.valueOf(num) + "  ";
-					
-				}
-				
+				//System.out.println("here");
+				bigSet.add(array[numCounter]);
+				temp = temp + String.valueOf(array[numCounter]) + "  ";
 				drawNumbers.setText(temp);
+				numCounter++;
 				
+				if(bigSet.size() == 20) {
+
+			        //matches = matches + matcher(bigSet,myQueue);
+					matchedNums = matcher(bigSet,myQueue);
+			        System.out.println("Passed it");
+			    	//System.out.println(matches);
+			        String str = "The matched numbers are: ";
+			        matchedNumbers.setVisible(true);
+			        
+			        if(matchedNums.size() > 0) {
+			        	for(String s:matchedNums) {
+				        	str = str + s + "  "; 
+				        }
+				        matchedNumbers.setText(str);
+			        }else {
+			        	matchedNumbers.setText("Sorry! Try again!");
+			        }
+			        
+				}
+
 			}        	
         };
         
@@ -527,29 +572,56 @@ public class JavaFXTemplate extends Application {
         		new KeyFrame(Duration.millis(1000))
         );
         
-        
-       	timeline.setCycleCount(20);
-       	
-        	
+        timeline.setCycleCount(20);
+       	       	
         checkDraws.setOnAction(e -> {
-        	timeline.play();
+        	timeline.play();       	
         });
-        
+
         
         Button nextDraw = new Button("Next Draw");
         nextDraw.setOnAction(e -> {
         	timeline.play();
-        	drawNumbers.setText(temp + "\n");
         });
         //nextDraw.setDisable(true);
 
         
 		VBox topDown = new VBox();
-		topDown.getChildren().addAll(menu,drawingsText,drawings,drawingsSubmit,checkDraws,drawNumbers,nextDraw);
+		topDown.getChildren().addAll(menu,drawingsText,drawings,drawingsSubmit,checkDraws,drawNumbers,nextDraw,matchedNumbers);
 		topDown.setSpacing(10);
 		
 		iLook.setOnAction(e-> topDown.setStyle("-fx-background-color: lightGreen;"));
 		return new Scene(topDown, 700,700);
+	}
+	
+//	public String matcher(Set<Integer> bigSet, GenericQueue<String> myQueue) {
+//		String answer = "";
+//		System.out.println("Reached the function");
+//		Iterator<String> y = myQueue.createIterator();
+//		y.next();
+//		while(y.hasNext()) { 
+//			//System.out.println(y.next());
+//			if(bigSet.contains(Integer.parseInt(y.next()))) {
+//				
+//				answer = answer + y.next() + "  ";
+//			}
+//		}
+		public ArrayList<String> matcher(Set<Integer> bigSet, GenericQueue<String> myQueue) {
+			//String answer = "";
+			ArrayList<String> matched = new ArrayList<String>();
+			System.out.println("Reached the function");
+			Iterator<String> y = myQueue.createIterator();
+			y.next();
+			while(y.hasNext()) { 
+				//System.out.println(y.next());
+				if(bigSet.contains(Integer.parseInt(y.next()))) {
+					matched.add(y.next());
+					//answer = answer + y.next() + "  ";
+				}
+		}
+
+		return matched;
+		
 	}
 
 }
