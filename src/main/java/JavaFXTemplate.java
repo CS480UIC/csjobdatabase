@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 
@@ -48,14 +50,16 @@ public class JavaFXTemplate extends Application {
 	ArrayList<String> matchedNums = new ArrayList<String>();
 	int iterations = 0, numPressed = 0, drawingLoops = 0;
 	int numCounter = 0;
-	String temp = "";
+	String temp = "The draw is: ";
 	String matches = "";
+	int selectedSpot;
+	int gameScore = 0;
 	
 	HashMap<String, Scene> sceneMap;
 	PauseTransition pause = new PauseTransition(Duration.seconds(1));
 	EventHandler<ActionEvent> returnButtons, submitAction, randomHandler, drawingsHandler, checker, finalNumEvent;
 	
-	GenericQueue<String> myQueue;
+	Queue<String> myQueue;
 	//ListView<String> displayQueueItems;
 	ObservableList<String> storeQueueItemsInListView;
 	
@@ -214,7 +218,7 @@ public class JavaFXTemplate extends Application {
 ///////////// Adding a GridPane and spots toggle in a HBox /////////////////////////////////////////		
 		
 		storeQueueItemsInListView = FXCollections.observableArrayList();
-		myQueue = new GenericQueue<String>("The selected numbers are:");
+		myQueue = new LinkedList<String>();
 		ListView<String> displayQueueItems = new ListView<String>();
 		
 		myHandler = new EventHandler<ActionEvent>() {
@@ -229,14 +233,21 @@ public class JavaFXTemplate extends Application {
 					Button b1 = (Button)e.getSource();
 					//b1.setMinWidth(50);
 					b1.setDisable(true);
-					myQueue.enqueue(t);
+					//myQueue.enqueue(t);
+					myQueue.add(t);
 					
 					displayQueueItems.getItems().removeAll(storeQueueItemsInListView);
 					storeQueueItemsInListView.clear();
-					Iterator<String> i = myQueue.createIterator();
-					while(i.hasNext()) { 
-						storeQueueItemsInListView.add(i.next());
+					//Iterator<String> i = myQueue.createIterator();
+					
+					for(String a:myQueue) {
+						storeQueueItemsInListView.add(a);
 					}
+					
+//					
+//					while(i.hasNext()) { 
+//						storeQueueItemsInListView.add(i.next());
+//					}
 					
 					displayQueueItems.setItems(storeQueueItemsInListView);
 					numPressed++;
@@ -299,6 +310,7 @@ public class JavaFXTemplate extends Application {
 				
 				RadioButton selectedSpotsButton = (RadioButton) spotsGroup.getSelectedToggle();
 				String toogleGroupValue = selectedSpotsButton.getText();
+				//selectedSpot = toogleGroupValue;
 				
 				if(toogleGroupValue == "1 spot") {
 					iterations = 1;
@@ -309,6 +321,7 @@ public class JavaFXTemplate extends Application {
 				}else if(toogleGroupValue == "10 spots") {
 					iterations = 10;
 				}
+				selectedSpot = iterations;
 				
 			}
         	
@@ -337,21 +350,29 @@ public class JavaFXTemplate extends Application {
 			    }
 			    
 			    for (int temp : set) {
-			    	myQueue.enqueue(String.valueOf(temp));
+			    	//myQueue.enqueue(String.valueOf(temp));
+			    	myQueue.add(String.valueOf(temp));
 			    }
 			    
 			    displayQueueItems.getItems().removeAll(storeQueueItemsInListView);
 				storeQueueItemsInListView.clear();
-				Iterator<String> j = myQueue.createIterator();
-				while(j.hasNext()) { 
-					storeQueueItemsInListView.add(j.next());
+//				Iterator<String> j = myQueue.createIterator();
+//				while(j.hasNext()) { 
+//					storeQueueItemsInListView.add(j.next());
+//				}
+				
+				for(String j:myQueue) {
+					storeQueueItemsInListView.add(j);
 				}
 				
 				displayQueueItems.setItems(storeQueueItemsInListView);
 				
-				Iterator<String> y = myQueue.createIterator();
-				while(y.hasNext()) { 
-					System.out.println(y.next());
+//				Iterator<String> y = myQueue.createIterator();
+//				while(y.hasNext()) { 
+//					System.out.println(y.next());
+//				}
+				for(String y:myQueue) {
+					System.out.println(y);
 				}
 				
 			}
@@ -526,8 +547,25 @@ public class JavaFXTemplate extends Application {
         
 //        ArrayList<String> matchedNums = new ArrayList<String>();
         
+        TextField roundGameScore = new TextField();
+        roundGameScore.setVisible(false);
+        roundGameScore.setEditable(false);
+        roundGameScore.setMinWidth(300);
+        
+        TextField totalGameScore = new TextField();
+        totalGameScore.setVisible(false);
+        totalGameScore.setEditable(false);
+        totalGameScore.setMinWidth(300);
+        
+        HBox pointer = new HBox();
+        pointer.getChildren().addAll(roundGameScore,totalGameScore);
+        
+        
         TextField drawNumbers = new TextField();
+        drawNumbers.setEditable(false);
+        
         TextField matchedNumbers = new TextField();
+        matchedNumbers.setEditable(false);
         matchedNumbers.setVisible(false);
         
         Set<Integer>bigSet = new LinkedHashSet<Integer>();
@@ -561,8 +599,30 @@ public class JavaFXTemplate extends Application {
 			        }else {
 			        	matchedNumbers.setText("Sorry! Try again!");
 			        }
+			        int roundScore = scorings(selectedSpot, matchedNums.size());
+			        roundGameScore.setVisible(true);
+			        totalGameScore.setVisible(true);
+			        roundGameScore.setText("Round Score: " + roundScore);
+			        gameScore = gameScore + roundScore;
+			        totalGameScore.setText("Total Score = " + gameScore);
+			        // Empty everything
+			        bigSet.clear();
+			        temp = "The next draw is: ";
+			        numCounter = 0;
+			        str = "";
+			        roundScore = 0;
 			        
+			        // make a new shuffled array
+			        Random rand = new Random();
+			        for (int i = 0; i < array.length; i++) {
+						int randomIndexToSwap = rand.nextInt(array.length);
+						int temp = array[randomIndexToSwap];
+						array[randomIndexToSwap] = array[i];
+						array[i] = temp;
+					}
 				}
+				
+				
 
 			}        	
         };
@@ -587,41 +647,80 @@ public class JavaFXTemplate extends Application {
 
         
 		VBox topDown = new VBox();
-		topDown.getChildren().addAll(menu,drawingsText,drawings,drawingsSubmit,checkDraws,drawNumbers,nextDraw,matchedNumbers);
+		topDown.getChildren().addAll(menu,drawingsText,drawings,drawingsSubmit,checkDraws,drawNumbers,nextDraw,matchedNumbers,pointer);
 		topDown.setSpacing(10);
 		
 		iLook.setOnAction(e-> topDown.setStyle("-fx-background-color: lightGreen;"));
 		return new Scene(topDown, 700,700);
 	}
-	
-//	public String matcher(Set<Integer> bigSet, GenericQueue<String> myQueue) {
-//		String answer = "";
-//		System.out.println("Reached the function");
-//		Iterator<String> y = myQueue.createIterator();
-//		y.next();
-//		while(y.hasNext()) { 
-//			//System.out.println(y.next());
-//			if(bigSet.contains(Integer.parseInt(y.next()))) {
-//				
-//				answer = answer + y.next() + "  ";
-//			}
-//		}
-		public ArrayList<String> matcher(Set<Integer> bigSet, GenericQueue<String> myQueue) {
+
+	public ArrayList<String> matcher(Set<Integer> bigSet, Queue<String> myQueue) {
 			//String answer = "";
 			ArrayList<String> matched = new ArrayList<String>();
 			System.out.println("Reached the function");
-			Iterator<String> y = myQueue.createIterator();
-			y.next();
-			while(y.hasNext()) { 
-				//System.out.println(y.next());
-				if(bigSet.contains(Integer.parseInt(y.next()))) {
-					matched.add(y.next());
+
+			
+			for(String y:myQueue) {
+				if(bigSet.contains(Integer.parseInt(y))) {
+					matched.add(y);
 					//answer = answer + y.next() + "  ";
 				}
-		}
+			}
 
 		return matched;
 		
+	}
+	
+	public int scorings(int spots, int matches) {
+		int score = 0;
+		
+		if(spots == 1) {
+			
+			if (matches == 1) {
+				score = 2;
+			}
+			
+		}else if(spots == 4) {
+			
+			if(matches == 2) {
+				score = 1;
+			}else if(matches == 3) {
+				score = 5;
+			}else if(matches == 4) {
+				score = 75;
+			}
+			
+		}else if(spots == 8) {
+			if(matches == 4) {
+				score = 2;
+			}else if(matches == 5) {
+				score = 12;
+			}else if(matches == 6) {
+				score = 50;
+			}else if(matches == 7) {
+				score = 750;
+			}else if(matches == 8) {
+				score = 10000;
+			}
+		}else if(spots == 10) {
+			if(matches == 0) {
+				score = 5;
+			}else if(matches == 5) {
+				score = 2;
+			}else if(matches == 6) {
+				score = 15;
+			}else if(matches == 7) {
+				score = 40;
+			}else if(matches == 8) {
+				score = 450;
+			}else if(matches == 9) {
+				score = 4250;
+			}else if(matches == 10) {
+				score = 100000;
+			}
+		}
+		
+		return score;
 	}
 
 }
