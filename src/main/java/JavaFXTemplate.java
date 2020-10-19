@@ -78,13 +78,13 @@ public class JavaFXTemplate extends Application {
 
 		
 		sceneMap = new HashMap<String,Scene>();
-		//sceneMap.put("WelcomeScene", createControlScene());
 		sceneMap.put("GameScene", createControlScene());
 		sceneMap.put("ResultsScene", resultsControlScene());
 		
+		// Change scene on button click
 		next.setOnAction( e->primaryStage.setScene(sceneMap.get("ResultsScene")));
-		//reset.setOnAction(e->primaryStage.setScene(sceneMap.get("GameScene")));
 		
+		// Event handler for play again and reset buttons
         playAgainhandler = new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent e) {
@@ -120,10 +120,8 @@ public class JavaFXTemplate extends Application {
 				roundScore = 0;
 				
 				//reseting the grid
-				
-				resetGrid(grid); //populate the GridPane with buttons
+				resetGrid(grid);
 				grid.setDisable(true);
-				
 				
 				//reseting the toggle switches
 				spotsGroup.getToggles().forEach(toggle -> { // Disable spotsGroup
@@ -140,13 +138,13 @@ public class JavaFXTemplate extends Application {
 				roundGameScore.setText("");
 				drawNumbers.setText("");
 				matchedNumbers.setText("");
-				
 			}
 		};		
 		
 		playAgain.setOnAction(playAgainhandler);
 		reset.setOnAction(playAgainhandler);
 		
+		// add an image for the main screen
 		Image pic = new Image("StartupImage.png");
 		ImageView v = new ImageView(pic);
 		v.setPreserveRatio(true);
@@ -155,8 +153,6 @@ public class JavaFXTemplate extends Application {
 		startButton = new Button();
 		startButton.setOnAction(e->primaryStage.setScene(sceneMap.get("GameScene")));
 		startButton.setGraphic(v);
-		
-		//pane.setCenter(startButton);
 		
 //////////////////// Add a menu with 1 tab and a few options ///////////////////////
 		menu = new MenuBar(); //a menu bar takes menus as children
@@ -207,17 +203,13 @@ public class JavaFXTemplate extends Application {
 		
 		// Add menu items to menu option
 		// Add menus to menu tab
-		
 		mMenu.getItems().addAll(iRules, iWinning, iExit);
 		menu.getMenus().add(mMenu);
 		
 /////////////////////////////////////////////////////////////////////////////////////
-		
-		StackPane stackPane = new StackPane();
-		stackPane.getChildren().addAll(new VBox(startButton));
-		// Set up the scene
-		Scene scene = new Scene(new VBox(menu, stackPane), 700, 700);
-//		Scene scene = new Scene(startButton, 700, 700);
+		VBox mainScene = new VBox(menu, startButton);
+		mainScene.setSpacing(0);
+		Scene scene = new Scene(mainScene, 700, 700);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
@@ -228,9 +220,7 @@ public class JavaFXTemplate extends Application {
 	
 	// method to create our first scene with controls
 	public Scene createControlScene() {
-		
-		//BorderPane pane = new BorderPane();
-		
+				
 		random = new Button();
         random.setText("Random");
         random.setDisable(true);
@@ -256,9 +246,7 @@ public class JavaFXTemplate extends Application {
 		MenuItem iExit = new MenuItem("Exit");
 		
 		iExit.setOnAction(e -> Platform.exit());
-		
-		//iLook.setOnAction(e-> pane.setStyle("-fx-background-color: lightBlue;"));
-		
+				
 		Dialog<String> dialogRules = new Dialog<String>();
         //Setting the title
         dialogRules.setTitle("Rules");
@@ -316,14 +304,11 @@ public class JavaFXTemplate extends Application {
 					String t = ((Button)e.getSource()).getText();
 					System.out.println("button pressed: " + ((Button)e.getSource()).getText());
 					b1 = (Button)e.getSource();
-					//b1.setMinWidth(50);
 					b1.setDisable(true);
-					//myQueue.enqueue(t);
 					myQueue.add(t);
 					
 					displayQueueItems.getItems().removeAll(storeQueueItemsInListView);
 					storeQueueItemsInListView.clear();
-					//Iterator<String> i = myQueue.createIterator();
 					
 					for(String a:myQueue) {
 						storeQueueItemsInListView.add(a);
@@ -331,10 +316,7 @@ public class JavaFXTemplate extends Application {
 					
 					displayQueueItems.setItems(storeQueueItemsInListView);
 					numPressed++;
-				}else {
-					//grid.setDisable(true);
-					
-				}
+				}else {}
 			}
 		};
 		
@@ -366,7 +348,6 @@ public class JavaFXTemplate extends Application {
         
     /////////////////////////////////////////////////
         submitButton = new Button("Submit Changes!");
-        //submitButton.setDisable(true);
         
         submitAction = new EventHandler<ActionEvent>() {
 
@@ -378,9 +359,7 @@ public class JavaFXTemplate extends Application {
 				random.setDisable(false);
 				next.setDisable(false);
 				reset.setDisable(false);
-				
-//				text1.setDisable(true); // Diable the text before the buttons
-				
+								
 				spotsGroup.getToggles().forEach(toggle -> { // Disable spotsGroup
 				    RadioButton node = (RadioButton) toggle ;
 				    node.setDisable(true);
@@ -390,7 +369,6 @@ public class JavaFXTemplate extends Application {
 				
 				RadioButton selectedSpotsButton = (RadioButton) spotsGroup.getSelectedToggle();
 				String toogleGroupValue = selectedSpotsButton.getText();
-				//selectedSpot = toogleGroupValue;
 				
 				if(toogleGroupValue == "1 spot") {
 					iterations = 1;
@@ -402,9 +380,7 @@ public class JavaFXTemplate extends Application {
 					iterations = 10;
 				}
 				selectedSpot = iterations;
-				
 			}
-        	
         };
         
         submitButton.setOnAction(submitAction);
@@ -430,37 +406,21 @@ public class JavaFXTemplate extends Application {
 			    }
 			    
 			    for (int temp : set) {
-			    	//myQueue.enqueue(String.valueOf(temp));
 			    	myQueue.add(String.valueOf(temp));
 			    }
 			    
 			    displayQueueItems.getItems().removeAll(storeQueueItemsInListView);
 				storeQueueItemsInListView.clear();
-//				Iterator<String> j = myQueue.createIterator();
-//				while(j.hasNext()) { 
-//					storeQueueItemsInListView.add(j.next());
-//				}
-				
+
 				for(String j:myQueue) {
 					storeQueueItemsInListView.add(j);
 				}
 				
 				displayQueueItems.setItems(storeQueueItemsInListView);
-				
-//				Iterator<String> y = myQueue.createIterator();
-//				while(y.hasNext()) { 
-//					System.out.println(y.next());
-//				}
-				for(String y:myQueue) {
-					System.out.println(y);
-				}
-				
 			}
 		};
         
         random.setOnAction(randomHandler);
-                
-//        reset.setOnAction(e->primaryStage.setScene(sceneMap.get("GameScene")));
         
 /////////////// Setup GridPane View /////////////////////////////////////////////////
 		
@@ -479,10 +439,9 @@ public class JavaFXTemplate extends Application {
         main.getChildren().addAll(menu,first,second,third);
 		main.setSpacing(20);
 		
-		//pane.setCenter(main);
-		iLook.setOnAction(e-> main.setStyle("-fx-background-color: lightBlue;"));		
-////////////////////////////////////////////////////////////////////////////////////
+		iLook.setOnAction(e-> main.setStyle("-fx-background-color: lightBlue;"));
 		
+		main.setStyle("-fx-background-color: lightGrey;");
 		return new Scene(main, 700,700);
 	}
 	
@@ -505,6 +464,9 @@ public class JavaFXTemplate extends Application {
 		}
 	}
 	
+	/*
+	 * Method to reset the grid.
+	 */
 	public void resetGrid(GridPane grid) {
 		int counter;
 		
@@ -527,7 +489,7 @@ public class JavaFXTemplate extends Application {
 		
 //////////////Adding A Menu at the TOP////////////////////////////////////////////
 		
-	// Add a menu with 1 tab and a few options
+		// Add a menu with 1 tab and a few options
 		menu = new MenuBar(); //a menu bar takes menus as children
 		Menu mMenu = new Menu("Menu"); //a menu goes inside a menu bar
 		
@@ -625,9 +587,6 @@ public class JavaFXTemplate extends Application {
 				}else if(toogleGroupValue == "4 drawings") {
 					drawingLoops = 4;
 				}
-				System.out.println(drawingLoops);
-				
-				
 			}	
         };
         drawingsSubmit.setText("Submit");
@@ -648,9 +607,7 @@ public class JavaFXTemplate extends Application {
 			array[randomIndexToSwap] = array[i];
 			array[i] = temp;
 		}
-        
-//        ArrayList<String> matchedNums = new ArrayList<String>();
-        
+                
         roundGameScore = new TextField();
         roundGameScore.setVisible(false);
         roundGameScore.setEditable(false);
@@ -687,7 +644,6 @@ public class JavaFXTemplate extends Application {
 			public void handle(ActionEvent event) {
 				// TODO Auto-generated method stub
 				
-				//System.out.println("here");
 				bigSet.add(array[numCounter]);
 				temp = temp + String.valueOf(array[numCounter]) + "  ";
 				drawNumbers.setText(temp);
@@ -695,10 +651,7 @@ public class JavaFXTemplate extends Application {
 				
 				if(bigSet.size() == 20) {
 
-			        //matches = matches + matcher(bigSet,myQueue);
 					matchedNums = matcher(bigSet,myQueue);
-			        System.out.println("Passed it");
-			    	//System.out.println(matches);
 			        str = "The matched numbers are: ";
 			        matchedNumbers.setVisible(true);
 			        
@@ -733,9 +686,6 @@ public class JavaFXTemplate extends Application {
 						array[i] = temp;
 					}
 				}
-				
-				
-
 			}        	
         };
         
@@ -746,7 +696,6 @@ public class JavaFXTemplate extends Application {
         
         timeline.setCycleCount(20);
        	
-        
         nextDraw = new Button("Next Draw");
         nextDraw.setDisable(true);
         nextDraw.setVisible(false);
@@ -759,7 +708,6 @@ public class JavaFXTemplate extends Application {
             	nextDraw.setVisible(true);
         	}else {
         		playAgain.setVisible(true);
-//            	playAgain.setOnAction(playAgainhandler);
             	exitButton.setVisible(true);
         	}
         });
@@ -771,7 +719,6 @@ public class JavaFXTemplate extends Application {
             	nextDraw.setDisable(true);
             	
             	playAgain.setVisible(true);
-//            	playAgain.setOnAction(playAgainhandler);
             	exitButton.setVisible(true);
             }
         });
@@ -785,19 +732,18 @@ public class JavaFXTemplate extends Application {
 		topDown.setSpacing(10);
 		
 		iLook.setOnAction(e-> topDown.setStyle("-fx-background-color: lightGreen;"));
+		
+		topDown.setStyle("-fx-background-color: lightGrey;");
 		return new Scene(topDown, 700,700);
 	}
 
 	public ArrayList<String> matcher(Set<Integer> bigSet, Queue<String> myQueue) {
 			//String answer = "";
 			ArrayList<String> matched = new ArrayList<String>();
-			System.out.println("Reached the function");
-
 			
 			for(String y:myQueue) {
 				if(bigSet.contains(Integer.parseInt(y))) {
 					matched.add(y);
-					//answer = answer + y.next() + "  ";
 				}
 			}
 
@@ -853,8 +799,6 @@ public class JavaFXTemplate extends Application {
 				score = 100000;
 			}
 		}
-		
 		return score;
 	}
-
 }
