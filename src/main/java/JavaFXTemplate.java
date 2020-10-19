@@ -42,22 +42,25 @@ import javafx.util.Duration;
 
 public class JavaFXTemplate extends Application {
 	
-	private Button startButton, b1, next, reset;
-	private TextField t1, text;
+	private Button startButton, b1, next, reset, playAgain, random, submitButton, drawingsSubmit, checkDraws, nextDraw, exitButton;
+	private TextField t1, text, roundGameScore, drawNumbers, matchedNumbers;
 	private MenuBar menu;
 	private EventHandler<ActionEvent> myHandler;
 	
 	ArrayList<String> matchedNums = new ArrayList<String>();
-	int iterations = 0, numPressed = 0, drawingLoops = 0;
-	int numCounter = 0;
+	int iterations = 0, numPressed = 0, drawingLoops = 0,drawingLoopsCounter = 1;
+	int numCounter = 0, selectedSpot = 0, gameScore = 0, roundScore = 0;
 	String temp = "The draw is: ";
 	String matches = "";
-	int selectedSpot;
-	int gameScore = 0;
+	String str = "";
+	
+	GridPane grid;
+	ListView<String> displayQueueItems;
+	ToggleGroup spotsGroup, drawingsGroup;
 	
 	HashMap<String, Scene> sceneMap;
 	PauseTransition pause = new PauseTransition(Duration.seconds(1));
-	EventHandler<ActionEvent> returnButtons, submitAction, randomHandler, drawingsHandler, checker, finalNumEvent;
+	EventHandler<ActionEvent> returnButtons, submitAction, randomHandler, drawingsHandler, checker, finalNumEvent, playAgainhandler;
 	
 	Queue<String> myQueue;
 	//ListView<String> displayQueueItems;
@@ -81,6 +84,68 @@ public class JavaFXTemplate extends Application {
 		
 		next.setOnAction( e->primaryStage.setScene(sceneMap.get("ResultsScene")));
 		//reset.setOnAction(e->primaryStage.setScene(sceneMap.get("GameScene")));
+		
+        playAgainhandler = new EventHandler<ActionEvent>() {
+
+			public void handle(ActionEvent e) {
+				primaryStage.setScene(sceneMap.get("GameScene"));
+				// Reseting All the Buttons
+				random.setDisable(true);
+				reset.setDisable(true);
+				next.setDisable(true);
+				submitButton.setDisable(false);
+				drawingsSubmit.setDisable(false);
+				checkDraws.setDisable(false);
+				nextDraw.setDisable(true);
+				nextDraw.setVisible(false);
+				playAgain.setVisible(false);
+				exitButton.setVisible(false);
+				b1.setDisable(false);
+				
+				//clearing the listview
+				storeQueueItemsInListView.clear();
+				displayQueueItems.getItems().clear();
+				myQueue.clear();
+				
+				//setting all the counters to their original values
+				iterations = 0;
+				numPressed = 0;
+				drawingLoops = 0;
+				drawingLoopsCounter = 1;
+				numCounter = 0;
+				selectedSpot = 0;
+				temp = "The draw is: ";
+				matches = "";
+				str = "";
+				roundScore = 0;
+				
+				//reseting the grid
+				
+				resetGrid(grid); //populate the GridPane with buttons
+				grid.setDisable(true);
+				
+				
+				//reseting the toggle switches
+				spotsGroup.getToggles().forEach(toggle -> { // Disable spotsGroup
+				    RadioButton node = (RadioButton) toggle ;
+				    node.setDisable(false);
+				});
+				
+				drawingsGroup.getToggles().forEach(toggle -> { // Disable spotsGroup
+				    RadioButton node = (RadioButton) toggle ;
+				    node.setDisable(false);
+				});
+				
+				// Setting text field to empty
+				roundGameScore.setText("");
+				drawNumbers.setText("");
+				matchedNumbers.setText("");
+				
+			}
+		};		
+		
+		playAgain.setOnAction(playAgainhandler);
+		reset.setOnAction(playAgainhandler);
 		
 		Image pic = new Image("StartupImage.png");
 		ImageView v = new ImageView(pic);
@@ -109,7 +174,13 @@ public class JavaFXTemplate extends Application {
         dialogRules.setTitle("Rules");
         ButtonType typeRules = new ButtonType("Ok", ButtonData.OK_DONE);
         //Setting the content of the dialog
-        dialogRules.setContentText("This is a sample dialog");
+        dialogRules.setContentText("Instructions for the game: \n"
+        		+ "1. Click on play and choose the number of cards you want to choose to have in your bet card. "
+        		+ "You can choose 1, 4, 8 or 10 numbers in your bet cards. \n"
+        		+ "2. Click on NEXT and choose your numbers from your grid or click on RANDOM to generate random values, "
+        		+ "or you can reset your number selection by clicking RESET.\n"
+        		+ "3. Click on number of drawings you want, you can choose between 1-4 drawings.\n"
+        		+ "4. As each drawing goes through, you will be notified of the numbers you matched and your earnings.");
         //Adding buttons to the dialog pane
         dialogRules.getDialogPane().getButtonTypes().add(typeRules);
 		
@@ -122,7 +193,11 @@ public class JavaFXTemplate extends Application {
         dialogOdds.setTitle("Odds of Winning");
         ButtonType typeOdds = new ButtonType("Ok", ButtonData.OK_DONE);
         //Setting the content of the dialog
-        dialogOdds.setContentText("This is a sample dialog");
+        dialogOdds.setContentText("Odds: \n"
+        		+ "2-Spot Game: Overall odds 1 in 16.6\n"
+        		+ "4-Spot Game: Overall odds 1 in 3.9\n"
+        		+ "8-Spot Game: Overall odds 1 in 9.8\n"
+        		+ "10-Spot Game: Overall odds 1 in 9.1\n");
         //Adding buttons to the dialog pane
         dialogOdds.getDialogPane().getButtonTypes().add(typeOdds);
 		
@@ -156,7 +231,7 @@ public class JavaFXTemplate extends Application {
 		
 		//BorderPane pane = new BorderPane();
 		
-		Button random = new Button();
+		random = new Button();
         random.setText("Random");
         random.setDisable(true);
         
@@ -189,7 +264,13 @@ public class JavaFXTemplate extends Application {
         dialogRules.setTitle("Rules");
         ButtonType typeRules = new ButtonType("Ok", ButtonData.OK_DONE);
         //Setting the content of the dialog
-        dialogRules.setContentText("This is a sample dialog");
+        dialogRules.setContentText("Instructions for the game: \n"
+        		+ "1. Click on play and choose the number of cards you want to choose to have in your bet card. "
+        		+ "You can choose 1, 4, 8 or 10 numbers in your bet cards. \n"
+        		+ "2. Click on NEXT and choose your numbers from your grid or click on RANDOM to generate random values, "
+        		+ "or you can reset your number selection by clicking RESET.\n"
+        		+ "3. Click on number of drawings you want, you can choose between 1-4 drawings.\n"
+        		+ "4. As each drawing goes through, you will be notified of the numbers you matched and your earnings.");
         //Adding buttons to the dialog pane
         dialogRules.getDialogPane().getButtonTypes().add(typeRules);
 		
@@ -202,7 +283,11 @@ public class JavaFXTemplate extends Application {
         dialogOdds.setTitle("Odds of Winning");
         ButtonType typeOdds = new ButtonType("Ok", ButtonData.OK_DONE);
         //Setting the content of the dialog
-        dialogOdds.setContentText("This is a sample dialog");
+        dialogOdds.setContentText("Odds: \n"
+        		+ "2-Spot Game: Overall odds 1 in 16.6\n"
+        		+ "4-Spot Game: Overall odds 1 in 3.9\n"
+        		+ "8-Spot Game: Overall odds 1 in 9.8\n"
+        		+ "10-Spot Game: Overall odds 1 in 9.1\n");
         //Adding buttons to the dialog pane
         dialogOdds.getDialogPane().getButtonTypes().add(typeOdds);
 		
@@ -219,7 +304,7 @@ public class JavaFXTemplate extends Application {
 		
 		storeQueueItemsInListView = FXCollections.observableArrayList();
 		myQueue = new LinkedList<String>();
-		ListView<String> displayQueueItems = new ListView<String>();
+		displayQueueItems = new ListView<String>();
 		
 		myHandler = new EventHandler<ActionEvent>() {
 
@@ -230,7 +315,7 @@ public class JavaFXTemplate extends Application {
 				if (numPressed < iterations) {
 					String t = ((Button)e.getSource()).getText();
 					System.out.println("button pressed: " + ((Button)e.getSource()).getText());
-					Button b1 = (Button)e.getSource();
+					b1 = (Button)e.getSource();
 					//b1.setMinWidth(50);
 					b1.setDisable(true);
 					//myQueue.enqueue(t);
@@ -244,11 +329,6 @@ public class JavaFXTemplate extends Application {
 						storeQueueItemsInListView.add(a);
 					}
 					
-//					
-//					while(i.hasNext()) { 
-//						storeQueueItemsInListView.add(i.next());
-//					}
-					
 					displayQueueItems.setItems(storeQueueItemsInListView);
 					numPressed++;
 				}else {
@@ -258,7 +338,7 @@ public class JavaFXTemplate extends Application {
 			}
 		};
 		
-		GridPane grid = new GridPane();
+		grid = new GridPane();
 		addGrid(grid); //populate the GridPane with buttons
 		
 		// Initially disable the grid so that it doesn't work
@@ -274,7 +354,7 @@ public class JavaFXTemplate extends Application {
         Text text1 = new Text();      
         text1.setText("Select the number of spots");
 
-        ToggleGroup spotsGroup = new ToggleGroup();  
+        spotsGroup = new ToggleGroup();  
         RadioButton button1 = new RadioButton("1 spot");  
         RadioButton button2 = new RadioButton("4 spots");  
         RadioButton button3 = new RadioButton("8 spots");  
@@ -285,7 +365,7 @@ public class JavaFXTemplate extends Application {
         button4.setToggleGroup(spotsGroup);
         
     /////////////////////////////////////////////////
-        Button submitButton = new Button("Submit Changes!");
+        submitButton = new Button("Submit Changes!");
         //submitButton.setDisable(true);
         
         submitAction = new EventHandler<ActionEvent>() {
@@ -416,7 +496,23 @@ public class JavaFXTemplate extends Application {
 		for(int x = 0; x<10; x++) {
 			for(int i = 0; i<8; i++) {
 				counter  = (10*i) + x + 1;
-				Button b1 = new Button(Integer.toString(counter));
+				b1 = new Button(Integer.toString(counter));
+				b1.setDisable(false);
+				b1.setOnAction(myHandler);
+				b1.setMinWidth(45);
+				grid.add(b1, x, i);
+			}
+		}
+	}
+	
+	public void resetGrid(GridPane grid) {
+		int counter;
+		
+		for(int x = 0; x<10; x++) {
+			for(int i = 0; i<8; i++) {
+				counter  = (10*i) + x + 1;
+				b1 = new Button(Integer.toString(counter));
+				b1.setDisable(false);
 				b1.setOnAction(myHandler);
 				b1.setMinWidth(45);
 				grid.add(b1, x, i);
@@ -448,7 +544,13 @@ public class JavaFXTemplate extends Application {
         dialogRules.setTitle("Rules");
         ButtonType typeRules = new ButtonType("Ok", ButtonData.OK_DONE);
         //Setting the content of the dialog
-        dialogRules.setContentText("This is a sample dialog");
+        dialogRules.setContentText("Instructions for the game: \n"
+        		+ "1. Click on play and choose the number of cards you want to choose to have in your bet card. "
+        		+ "You can choose 1, 4, 8 or 10 numbers in your bet cards. \n"
+        		+ "2. Click on NEXT and choose your numbers from your grid or click on RANDOM to generate random values, "
+        		+ "or you can reset your number selection by clicking RESET.\n"
+        		+ "3. Click on number of drawings you want, you can choose between 1-4 drawings.\n"
+        		+ "4. As each drawing goes through, you will be notified of the numbers you matched and your earnings.");
         //Adding buttons to the dialog pane
         dialogRules.getDialogPane().getButtonTypes().add(typeRules);
 		
@@ -461,7 +563,11 @@ public class JavaFXTemplate extends Application {
         dialogOdds.setTitle("Odds of Winning");
         ButtonType typeOdds = new ButtonType("Ok", ButtonData.OK_DONE);
         //Setting the content of the dialog
-        dialogOdds.setContentText("This is a sample dialog");
+        dialogOdds.setContentText("Odds: \n"
+        		+ "2-Spot Game: Overall odds 1 in 16.6\n"
+        		+ "4-Spot Game: Overall odds 1 in 3.9\n"
+        		+ "8-Spot Game: Overall odds 1 in 9.8\n"
+        		+ "10-Spot Game: Overall odds 1 in 9.1\n");
         //Adding buttons to the dialog pane
         dialogOdds.getDialogPane().getButtonTypes().add(typeOdds);
 		
@@ -479,7 +585,7 @@ public class JavaFXTemplate extends Application {
 		Text drawingsText = new Text();      
         drawingsText.setText("Select the number of drawings");
         
-	    ToggleGroup drawingsGroup = new ToggleGroup();  
+	    drawingsGroup = new ToggleGroup();  
 	    RadioButton button5 = new RadioButton("1 drawing");  
 	    RadioButton button6 = new RadioButton("2 drawings");  
 	    RadioButton button7 = new RadioButton("3 drawings");  
@@ -493,7 +599,7 @@ public class JavaFXTemplate extends Application {
 	    drawings.getChildren().addAll(button5,button6,button7,button8);
 	    drawings.setSpacing(10);
 	    
-	    Button drawingsSubmit = new Button();
+	    drawingsSubmit = new Button();
 	    drawingsHandler = new EventHandler<ActionEvent>() {
 
 			@Override
@@ -506,9 +612,7 @@ public class JavaFXTemplate extends Application {
 				    RadioButton node = (RadioButton) toggle ;
 				    node.setDisable(true);
 				});
-				
-				drawingsSubmit.setDisable(true);
-				
+								
 				RadioButton selectedDrawingsButton = (RadioButton) drawingsGroup.getSelectedToggle();
 				String toogleGroupValue = selectedDrawingsButton.getText();
 				
@@ -529,7 +633,7 @@ public class JavaFXTemplate extends Application {
         drawingsSubmit.setText("Submit");
         drawingsSubmit.setOnAction(drawingsHandler);
         
-        Button checkDraws = new Button("Check Draws!");
+        checkDraws = new Button("Check Draws!");
         
         int[] array = new int[80];
         
@@ -547,7 +651,7 @@ public class JavaFXTemplate extends Application {
         
 //        ArrayList<String> matchedNums = new ArrayList<String>();
         
-        TextField roundGameScore = new TextField();
+        roundGameScore = new TextField();
         roundGameScore.setVisible(false);
         roundGameScore.setEditable(false);
         roundGameScore.setMinWidth(300);
@@ -561,12 +665,19 @@ public class JavaFXTemplate extends Application {
         pointer.getChildren().addAll(roundGameScore,totalGameScore);
         
         
-        TextField drawNumbers = new TextField();
+        drawNumbers = new TextField();
         drawNumbers.setEditable(false);
         
-        TextField matchedNumbers = new TextField();
+        matchedNumbers = new TextField();
         matchedNumbers.setEditable(false);
         matchedNumbers.setVisible(false);
+        
+        playAgain = new Button("Play Again!");
+        playAgain.setVisible(false);
+        
+        exitButton = new Button("Exit Game");
+        exitButton.setVisible(false);
+        exitButton.setOnAction(e -> Platform.exit());
         
         Set<Integer>bigSet = new LinkedHashSet<Integer>();
 
@@ -588,7 +699,7 @@ public class JavaFXTemplate extends Application {
 					matchedNums = matcher(bigSet,myQueue);
 			        System.out.println("Passed it");
 			    	//System.out.println(matches);
-			        String str = "The matched numbers are: ";
+			        str = "The matched numbers are: ";
 			        matchedNumbers.setVisible(true);
 			        
 			        if(matchedNums.size() > 0) {
@@ -597,9 +708,10 @@ public class JavaFXTemplate extends Application {
 				        }
 				        matchedNumbers.setText(str);
 			        }else {
-			        	matchedNumbers.setText("Sorry! Try again!");
+			        	str = "Sorry, No Matches! Try again!";
+			        	matchedNumbers.setText(str);
 			        }
-			        int roundScore = scorings(selectedSpot, matchedNums.size());
+			        roundScore = scorings(selectedSpot, matchedNums.size());
 			        roundGameScore.setVisible(true);
 			        totalGameScore.setVisible(true);
 			        roundGameScore.setText("Round Score: " + roundScore);
@@ -633,21 +745,43 @@ public class JavaFXTemplate extends Application {
         );
         
         timeline.setCycleCount(20);
-       	       	
-        checkDraws.setOnAction(e -> {
-        	timeline.play();       	
-        });
-
+       	
         
-        Button nextDraw = new Button("Next Draw");
+        nextDraw = new Button("Next Draw");
+        nextDraw.setDisable(true);
+        nextDraw.setVisible(false);
+        
+        checkDraws.setOnAction(e -> {
+        	timeline.play();
+        	checkDraws.setDisable(true);
+        	if(drawingLoops > 1) {
+        		nextDraw.setDisable(false);
+            	nextDraw.setVisible(true);
+        	}else {
+        		playAgain.setVisible(true);
+//            	playAgain.setOnAction(playAgainhandler);
+            	exitButton.setVisible(true);
+        	}
+        });
+        
         nextDraw.setOnAction(e -> {
         	timeline.play();
+        	drawingLoopsCounter++;
+        	if(drawingLoopsCounter == drawingLoops) {
+            	nextDraw.setDisable(true);
+            	
+            	playAgain.setVisible(true);
+//            	playAgain.setOnAction(playAgainhandler);
+            	exitButton.setVisible(true);
+            }
         });
-        //nextDraw.setDisable(true);
+        
+        HBox controls = new HBox();
+        controls.getChildren().addAll(playAgain,exitButton);
 
         
 		VBox topDown = new VBox();
-		topDown.getChildren().addAll(menu,drawingsText,drawings,drawingsSubmit,checkDraws,drawNumbers,nextDraw,matchedNumbers,pointer);
+		topDown.getChildren().addAll(menu,drawingsText,drawings,drawingsSubmit,checkDraws,drawNumbers,nextDraw,matchedNumbers,pointer,controls);
 		topDown.setSpacing(10);
 		
 		iLook.setOnAction(e-> topDown.setStyle("-fx-background-color: lightGreen;"));
